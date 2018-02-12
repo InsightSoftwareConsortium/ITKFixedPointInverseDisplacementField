@@ -171,7 +171,7 @@ FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>
     }
 
   // get pointers to the input and output
-  InputImageType *inputPtr = const_cast< InputImageType * >( this->GetInput() );
+  auto *inputPtr = const_cast< InputImageType * >( this->GetInput() );
 
   // Request the entire input image
   InputImageRegionType inputRegion;
