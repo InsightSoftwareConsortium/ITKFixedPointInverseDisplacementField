@@ -44,7 +44,7 @@ namespace itk
  * Medical Physics, vol. 35, issue 1, p. 81,
  * is applied.
  *
- * \author Marcel Lüthi, Computer Science Department, University of Basel
+ * \author Marcel LÃ¼thi, Computer Science Department, University of Basel
  *
  * \ingroup ImageToImageFilter
  * \ingroup FixedPointInverseDisplacementField
@@ -157,7 +157,6 @@ private:
   OutputImageSizeType                      m_Size;              // Size of the output image
   OutputImageSpacingType                   m_OutputSpacing;     // output image spacing
   OutputImageOriginPointType               m_OutputOrigin;      // output image origin
-
 
 };
 
