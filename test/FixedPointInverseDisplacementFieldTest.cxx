@@ -26,39 +26,40 @@
 #include "itkFixedPointInverseDisplacementFieldImageFilter.h"
 
 
-int FixedPointInverseDisplacementFieldTest(int argc, char *argv[])
+int
+FixedPointInverseDisplacementFieldTest(int argc, char * argv[])
 {
-  if( argc < 3 )
-    {
-      std::cerr << "usage: " << argv[0] << " input_filename output_filename" << std::endl;
+  if (argc < 3)
+  {
+    std::cerr << "usage: " << argv[0] << " input_filename output_filename" << std::endl;
     return 1;
-    }
+  }
 
   constexpr unsigned int Dimension = 3;
 
-  using VectorPixelType = itk::Vector< float, Dimension >;
-  using InputDFType = itk::Image< VectorPixelType, Dimension >;
-  using OutputDFType = itk::Image< VectorPixelType, Dimension >;
+  using VectorPixelType = itk::Vector<float, Dimension>;
+  using InputDFType = itk::Image<VectorPixelType, Dimension>;
+  using OutputDFType = itk::Image<VectorPixelType, Dimension>;
 
-  using ReaderType = itk::ImageFileReader< InputDFType >;
-  using WriterType = itk::ImageFileWriter< OutputDFType >;
+  using ReaderType = itk::ImageFileReader<InputDFType>;
+  using WriterType = itk::ImageFileWriter<OutputDFType>;
 
   using FPInverseType = itk::FixedPointInverseDisplacementFieldImageFilter<InputDFType, OutputDFType>;
 
   // read the file
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(argv[1]);
- 
+
   try
-    {
-      reader->UpdateLargestPossibleRegion();
-    }
-  catch (itk::ExceptionObject& e)
-    {
+  {
+    reader->UpdateLargestPossibleRegion();
+  }
+  catch (itk::ExceptionObject & e)
+  {
     std::cerr << "Exception detected while reading " << argv[1];
-    std::cerr << " : "  << e.GetDescription();
+    std::cerr << " : " << e.GetDescription();
     return 1;
-    }
+  }
 
   // invert the Displacementfield
   InputDFType::Pointer inputDf = reader->GetOutput();
@@ -71,21 +72,21 @@ int FixedPointInverseDisplacementFieldTest(int argc, char *argv[])
   inverter->SetNumberOfIterations(20);
   inverter->Update();
   OutputDFType::Pointer outputDf = inverter->GetOutput();
-  
+
 
   // write the file
   WriterType::Pointer writer = WriterType::New();
   writer->SetInput(inverter->GetOutput());
   try
-    {
-    writer->SetFileName( argv[2] );
+  {
+    writer->SetFileName(argv[2]);
     writer->Update();
-    }
+  }
   catch (...)
-    {
+  {
     std::cerr << "Error during write of " << argv[2] << std::endl;
     return 1;
-    }
+  }
 
   return 0;
 }

@@ -54,16 +54,16 @@ Medical Physics, vol. 35, issue 1, p. 81
  * \ingroup FixedPointInverseDisplacementField
  */
 
-template < typename TInputImage, typename TOutputImage >
-class ITK_TEMPLATE_EXPORT FixedPointInverseDisplacementFieldImageFilter :
-    public ImageToImageFilter<TInputImage,TOutputImage>
+template <typename TInputImage, typename TOutputImage>
+class ITK_TEMPLATE_EXPORT FixedPointInverseDisplacementFieldImageFilter
+  : public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(FixedPointInverseDisplacementFieldImageFilter);
 
   /** Standard class type alias. */
   using Self = FixedPointInverseDisplacementFieldImageFilter;
-  using Superclass = ImageToImageFilter<TInputImage,TOutputImage>;
+  using Superclass = ImageToImageFilter<TInputImage, TOutputImage>;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
@@ -104,7 +104,7 @@ public:
   using OutputConstIterator = ImageRegionConstIterator<OutputImageType>;
   using OutputIterator = ImageRegionIterator<OutputImageType>;
 
-  using VectorWarperType = WarpVectorImageFilter<TOutputImage,TInputImage,TOutputImage>;
+  using VectorWarperType = WarpVectorImageFilter<TOutputImage, TInputImage, TOutputImage>;
   using InterpolatorVectorType = typename NumericTraits<typename TOutputImage::PixelType>::RealType;
   using OutputVectorType = typename TOutputImage::PixelType;
   using FieldInterpolatorType = VectorLinearInterpolateImageFunction<TInputImage, double>;
@@ -117,27 +117,28 @@ public:
 
 
   /** Set the size of the output image. */
-  itkSetMacro( Size, OutputImageSizeType );
+  itkSetMacro(Size, OutputImageSizeType);
   /** Get the size of the output image. */
-  itkGetConstReferenceMacro( Size, OutputImageSizeType );
+  itkGetConstReferenceMacro(Size, OutputImageSizeType);
 
   /** Set the output image spacing. */
   itkSetMacro(OutputSpacing, OutputImageSpacingType);
-  virtual void SetOutputSpacing(const double* values);
+  virtual void
+  SetOutputSpacing(const double * values);
 
   /** Get the output image spacing. */
-  itkGetConstReferenceMacro( OutputSpacing, OutputImageSpacingType );
+  itkGetConstReferenceMacro(OutputSpacing, OutputImageSpacingType);
 
   /** Set the output image origin. */
   itkSetMacro(OutputOrigin, OutputImageOriginPointType);
-  virtual void SetOutputOrigin( const double* values);
+  virtual void
+  SetOutputOrigin(const double * values);
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro(OutputHasNumericTraitsCheck,
-                  (Concept::HasNumericTraits<OutputImageValueType>));
-  itkConceptMacro( SameDimensionCheck,
-                   ( Concept::SameDimension< TInputImage::ImageDimension, TOutputImage::ImageDimension > ) );
+  itkConceptMacro(OutputHasNumericTraitsCheck, (Concept::HasNumericTraits<OutputImageValueType>));
+  itkConceptMacro(SameDimensionCheck,
+                  (Concept::SameDimension<TInputImage::ImageDimension, TOutputImage::ImageDimension>));
 
   /** End concept checking */
 #endif
@@ -146,26 +147,29 @@ protected:
   FixedPointInverseDisplacementFieldImageFilter();
   ~FixedPointInverseDisplacementFieldImageFilter() override {}
 
-  void PrintSelf(std::ostream& os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void GenerateData( ) override;
-  void GenerateOutputInformation() override;
+  void
+  GenerateData() override;
+  void
+  GenerateOutputInformation() override;
 
-  void GenerateInputRequestedRegion() override;
+  void
+  GenerateInputRequestedRegion() override;
 
   unsigned int m_NumberOfIterations;
 
 
 private:
-  OutputImageSizeType                      m_Size;              // Size of the output image
-  OutputImageSpacingType                   m_OutputSpacing;     // output image spacing
-  OutputImageOriginPointType               m_OutputOrigin;      // output image origin
-
+  OutputImageSizeType        m_Size;          // Size of the output image
+  OutputImageSpacingType     m_OutputSpacing; // output image spacing
+  OutputImageOriginPointType m_OutputOrigin;  // output image origin
 };
 
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkFixedPointInverseDisplacementFieldImageFilter.hxx"
+#  include "itkFixedPointInverseDisplacementFieldImageFilter.hxx"
 #endif
 #endif

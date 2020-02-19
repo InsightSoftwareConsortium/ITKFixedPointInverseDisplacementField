@@ -21,12 +21,15 @@
 #include "itkFixedPointInverseDisplacementFieldImageFilter.h"
 #include <iostream>
 
-namespace itk {
+namespace itk
+{
 //----------------------------------------------------------------------------
 // Constructor
-template<typename TInputImage, typename TOutputImage>
-FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::FixedPointInverseDisplacementFieldImageFilter() :
-  m_NumberOfIterations(5) {
+template <typename TInputImage, typename TOutputImage>
+FixedPointInverseDisplacementFieldImageFilter<TInputImage,
+                                              TOutputImage>::FixedPointInverseDisplacementFieldImageFilter()
+  : m_NumberOfIterations(5)
+{
 
   m_OutputSpacing.Fill(1.0);
   m_OutputOrigin.Fill(0.0);
@@ -42,11 +45,10 @@ FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::FixedP
  */
 template <typename TInputImage, typename TOutputImage>
 void
-FixedPointInverseDisplacementFieldImageFilter<TInputImage,TOutputImage>
-::SetOutputSpacing(const double* spacing)
+FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::SetOutputSpacing(const double * spacing)
 {
   OutputImageSpacingType s(spacing);
-  this->SetOutputSpacing( s );
+  this->SetOutputSpacing(s);
 }
 
 /**
@@ -54,32 +56,30 @@ FixedPointInverseDisplacementFieldImageFilter<TInputImage,TOutputImage>
  */
 template <typename TInputImage, typename TOutputImage>
 void
-FixedPointInverseDisplacementFieldImageFilter<TInputImage,TOutputImage>
-::SetOutputOrigin(const double* origin)
+FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::SetOutputOrigin(const double * origin)
 {
   OutputImageOriginPointType p(origin);
-  this->SetOutputOrigin( p );
+  this->SetOutputOrigin(p);
 }
 
 
 //----------------------------------------------------------------------------
-template<typename TInputImage, typename TOutputImage>
-void FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::GenerateData()
+template <typename TInputImage, typename TOutputImage>
+void
+FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::GenerateData()
 {
 
-  const InputImageType  *inputPtr = this->GetInput(0);
-  OutputImageType *outputPtr = this->GetOutput(0);
+  const InputImageType * inputPtr = this->GetInput(0);
+  OutputImageType *      outputPtr = this->GetOutput(0);
 
-  InputConstIterator InputIt = InputConstIterator(inputPtr,
-      inputPtr->GetRequestedRegion());
+  InputConstIterator InputIt = InputConstIterator(inputPtr, inputPtr->GetRequestedRegion());
 
   // We allocate a Displacement field that holds the output
   // and initialize it to 0
-  outputPtr->SetBufferedRegion( outputPtr->GetRequestedRegion() );
+  outputPtr->SetBufferedRegion(outputPtr->GetRequestedRegion());
   outputPtr->Allocate();
 
-  OutputIterator outputIt = OutputIterator(outputPtr,
-      outputPtr->GetRequestedRegion());
+  OutputIterator       outputIt = OutputIterator(outputPtr, outputPtr->GetRequestedRegion());
   OutputImagePixelType zero_pt;
   zero_pt.Fill(0);
   outputPtr->FillBuffer(zero_pt);
@@ -88,37 +88,36 @@ void FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::G
   // In the fixed point iteration, we will need to access non-grid points.
   // Currently, the best interpolator that is supported by itk for vector
   // images is the linear interpolater.
-  typename FieldInterpolatorType::Pointer vectorInterpolator =
-      FieldInterpolatorType::New();
+  typename FieldInterpolatorType::Pointer vectorInterpolator = FieldInterpolatorType::New();
   vectorInterpolator->SetInputImage(inputPtr);
 
 
   // Finally, perform the fixed point iteration.
-  InputImagePointType mappedPt;
+  InputImagePointType  mappedPt;
   OutputImagePointType pt;
 
   for (unsigned int i = 0; i <= m_NumberOfIterations; i++)
   {
     for (outputIt.GoToBegin(); !outputIt.IsAtEnd(); ++outputIt)
     {
-    const OutputImageIndexType index = outputIt.GetIndex();
-    outputPtr->TransformIndexToPhysicalPoint(index, pt);
-    const OutputImagePixelType displacement = outputIt.Get();
-    for (unsigned int j = 0; j < ImageDimension; j++)
+      const OutputImageIndexType index = outputIt.GetIndex();
+      outputPtr->TransformIndexToPhysicalPoint(index, pt);
+      const OutputImagePixelType displacement = outputIt.Get();
+      for (unsigned int j = 0; j < ImageDimension; j++)
       {
-      mappedPt[j] = pt[j] + displacement[j];
+        mappedPt[j] = pt[j] + displacement[j];
       }
 
 
-    if (vectorInterpolator->IsInsideBuffer(mappedPt))
+      if (vectorInterpolator->IsInsideBuffer(mappedPt))
       {
-      InterpolatorVectorType val = vectorInterpolator->Evaluate(mappedPt);
-      OutputVectorType outputVector;
-      for( unsigned int j = 0; j < ImageDimension; j++ )
+        InterpolatorVectorType val = vectorInterpolator->Evaluate(mappedPt);
+        OutputVectorType       outputVector;
+        for (unsigned int j = 0; j < ImageDimension; j++)
         {
-        outputVector[j] = -val[j];
+          outputVector[j] = -val[j];
         }
-      outputIt.Set(outputVector);
+        outputIt.Set(outputVector);
       }
     }
   }
@@ -130,48 +129,46 @@ void FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::G
  */
 template <typename TInputImage, typename TOutputImage>
 void
-FixedPointInverseDisplacementFieldImageFilter<TInputImage,TOutputImage>
-::GenerateOutputInformation()
+FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::GenerateOutputInformation()
 {
   // call the superclass' implementation of this method
   Superclass::GenerateOutputInformation();
 
   // get pointers to the input and output
   OutputImageType * outputPtr = this->GetOutput();
-  if ( !outputPtr )
-    {
+  if (!outputPtr)
+  {
     return;
-    }
+  }
 
   // Set the size of the output region
   typename TOutputImage::RegionType outputLargestPossibleRegion;
-  outputLargestPossibleRegion.SetSize( m_Size );
-  outputPtr->SetLargestPossibleRegion( outputLargestPossibleRegion );
+  outputLargestPossibleRegion.SetSize(m_Size);
+  outputPtr->SetLargestPossibleRegion(outputLargestPossibleRegion);
 
   // Set spacing and origin
-  outputPtr->SetSpacing( m_OutputSpacing );
-  outputPtr->SetOrigin( m_OutputOrigin );
+  outputPtr->SetSpacing(m_OutputSpacing);
+  outputPtr->SetOrigin(m_OutputOrigin);
 
   return;
 }
 
 
 //----------------------------------------------------------------------------
-template<typename TInputImage, typename TOutputImage>
+template <typename TInputImage, typename TOutputImage>
 void
-FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>
-::GenerateInputRequestedRegion()
+FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::GenerateInputRequestedRegion()
 {
   // call the superclass's implementation of this method
   Superclass::GenerateInputRequestedRegion();
 
-  if ( !this->GetInput() )
-    {
+  if (!this->GetInput())
+  {
     return;
-    }
+  }
 
   // get pointers to the input and output
-  auto *inputPtr = const_cast< InputImageType * >( this->GetInput() );
+  auto * inputPtr = const_cast<InputImageType *>(this->GetInput());
 
   // Request the entire input image
   InputImageRegionType inputRegion;
@@ -180,15 +177,15 @@ FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>
 }
 
 //----------------------------------------------------------------------------
-template<typename TInputImage, typename TOutputImage>
-void FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::PrintSelf(
-    std::ostream& os, Indent indent) const
+template <typename TInputImage, typename TOutputImage>
+void
+FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::PrintSelf(std::ostream & os,
+                                                                                    Indent         indent) const
 {
 
   Superclass::PrintSelf(os, indent);
 
-  os << indent << "Number of iterations: " << m_NumberOfIterations
-      << std::endl;
+  os << indent << "Number of iterations: " << m_NumberOfIterations << std::endl;
   os << std::endl;
 }
 
