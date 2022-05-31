@@ -26,7 +26,7 @@ setup(
                      'fixed-point approach.\n'
                      'Please refer to:\n'
                      'M. Luethi, "Inverting deformation fields using a fixed point iteration scheme.", '
-                     'Insight Journal, July-December 2010, http://hdl.handle.net/10380/3222.',
+                     'Insight Journal, July-December 2010, https://hdl.handle.net/10380/3222.',
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python",

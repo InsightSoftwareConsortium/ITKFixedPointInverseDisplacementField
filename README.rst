@@ -17,8 +17,8 @@ The FixedPointInverseDisplacementFieldImageFilter has been implemented and descr
 
   Luethi M.
   "Inverting Displacement fields using a fixed point iteration scheme."
-  http://hdl.handle.net/10380/3222
-  http://www.insight-journal.org/browse/publication/768
+  https://hdl.handle.net/10380/3222
+  https://www.insight-journal.org/browse/publication/768
   October 2010.
 
 Since ITK 4.10.0, this module is available in the ITK source tree as a Remote
