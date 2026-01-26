@@ -1,5 +1,5 @@
 ITKFixedPointInverseDisplacementField
-=================================
+=====================================
 .. image:: https://github.com/InsightSoftwareConsortium/ITKFixedPointInverseDisplacementField/workflows/Build,%20test,%20package/badge.svg
 
 ITKFixedPointInverseDisplacementField takes a displacement field as input and
